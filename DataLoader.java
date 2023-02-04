@@ -308,10 +308,12 @@ public class DataLoader {
                     }
                 }
             }
+        }
         
         return flag;
     }
-
+    
+    
     //Linear movement like rook
     public boolean moveLikeRook(Piece p, int newx, int newy)
     {
