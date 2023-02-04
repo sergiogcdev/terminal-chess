@@ -281,8 +281,8 @@ public class DataLoader {
                 {
                     if(p.getPositionX() > p1.getPositionX() && p1.getPositionX() >= newx)
                     {
-                        //if(newx == p1.getPositionX() && !p1.getColor().equals(p.getColor()))
-                        //{
+                        if(newx == p1.getPositionX() && !p1.getColor().equals(p.getColor()))
+                        {
                             flag = true;
                             break;
                         }
