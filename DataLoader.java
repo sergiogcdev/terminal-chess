@@ -230,23 +230,29 @@ public class DataLoader {
         boolean flag = true;
         Piece p1 = null;
         Piece p2 = null;
+        int nx = Math.abs(p.getPositionX() - newx);
+        int ny = Math.abs(p.getPositionY() - newy);
         for(int k = 0; k < this.matrix.getMatrix().length; k++)
         {
+            //Eje Y hacia abajo
             if(newy > p.getPositionY())
             {
-                if (k < newy) 
-                {
-                    p1 = this.whitePieces.getPiece(newx, newy - k);
-                    p2 = this.blackPieces.getPiece(newx, newy - k);
+                if (newx > p.getPositionX()) {
+                    p1 = this.whitePieces.getPiece(newx - k, newy - k);
+                    p2 = this.blackPieces.getPiece(newx - k, newy - k);
+                } else {
+                    p1 = this.whitePieces.getPiece(newx + k, newy - k);
+                    p2 = this.blackPieces.getPiece(newx + k, newy - k);
                 }
-                if(p1 != null)
+
+                //Eje X
+                if(p1 != null && !p1.equals(p))
                 {
                     if(p.getPositionY() < p1.getPositionY() && p1.getPositionY() <= newy)
                     {
                         if(newy == p1.getPositionY() && !p1.getColor().equals(p.getColor()))
                         {
                             flag = true;
-                            break;
                         }
                         else {
                             flag = false;
@@ -254,15 +260,13 @@ public class DataLoader {
                         }
                     }
                 }
-                else if(p2 != null)
+                else if(p2 != null && !p2.equals(p))
                 {
-                    
                     if(p.getPositionY() < p2.getPositionY() && p2.getPositionY() <= newy)
                     {
                         if(newy == p2.getPositionY() && !p2.getColor().equals(p.getColor()))
                         {
                             flag = true;
-                            break;
                         }
                         else {
                             flag = false;
@@ -271,49 +275,56 @@ public class DataLoader {
                     }
                 }
             }
+            //Eje Y hacia arriba
             else if(newy < p.getPositionY()) {
-                if (k < newx) 
-                {
-                    p1 = this.whitePieces.getPiece(newx - k, newy);
-                    p2 = this.blackPieces.getPiece(newx - k, newy);
+
+                if (newx > p.getPositionX()) {
+                    p1 = this.whitePieces.getPiece(p.getPositionX() + k, p.getPositionY() - k);
+                    p2 = this.blackPieces.getPiece(p.getPositionX() + k, p.getPositionY() - k);
                 }
-                if(p1 != null)
+                else {
+                    p1 = this.whitePieces.getPiece(p.getPositionX() - k, p.getPositionY() - k);
+                    p2 = this.blackPieces.getPiece(p.getPositionX() - k, p.getPositionY() - k);
+                }
+                // Eje X
+                if(p1 != null && !p1.equals(p))
                 {
-                    if(p.getPositionX() > p1.getPositionX() && p1.getPositionX() >= newx)
+                    if(p.getPositionY() > p1.getPositionY() && p1.getPositionY() >= newy)
                     {
-                        if(newx == p1.getPositionX() && !p1.getColor().equals(p.getColor()))
+                        
+                        if(newy == p1.getPositionY() && !p1.getColor().equals(p.getColor()))
                         {
                             flag = true;
-                            break;
                         }
                         else {
                             flag = false;
                             break;
                         }
+                        
                     }
                 }
-                else if(p2 != null)
+                else if(p2 != null && !p2.equals(p))
                 {
-                    if(p.getPositionX() > p2.getPositionX() && p2.getPositionX() >= newx)
+                    if(p.getPositionY() > p2.getPositionY() && p2.getPositionY() >= newy)
                     {
-                        if(newx == p2.getPositionX() && !p2.getColor().equals(p.getColor()))
+                        if(newy == p2.getPositionY() && !p2.getColor().equals(p.getColor()))
                         {
                             flag = true;
-                            break;
                         }
                         else {
                             flag = false;
                             break;
                         }
+                        
                     }
                 }
+                
             }
         }
         
         return flag;
     }
-    
-    
+
     //Linear movement like rook
     public boolean moveLikeRook(Piece p, int newx, int newy)
     {
