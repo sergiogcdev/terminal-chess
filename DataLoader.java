@@ -206,7 +206,7 @@ public class DataLoader {
                 flag = true;
             }
         }
-        else if(p.getColor().equals("White") && (p.getPositionX() - 1 == newx || p.getPositionX() + 1 == newx ) && p.getPositionY() + 1 == newy)
+        if(p.getColor().equals("White") && (p.getPositionX() - 1 == newx || p.getPositionX() + 1 == newx ) && p.getPositionY() + 1 == newy)
         {
             if( this.blackPieces.getPiece(newx, newy) != null ) flag = true;
         }
@@ -214,13 +214,11 @@ public class DataLoader {
         {
             if( this.whitePieces.getPiece(newx, newy) != null ) flag = true;
         }
-        else 
+        if((n == 1) && (p.getPositionX() == newx))
         {
-            if((n == 1) && (p.getPositionX() == newx))
-            {
                 flag = true;
-            }
         }
+    
         return flag;
     }
 
