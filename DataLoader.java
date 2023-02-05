@@ -147,6 +147,10 @@ public class DataLoader {
                 {
                     flag = true;
                 }
+                if (nx == ny)
+                {
+                    flag = moveLikePawn(p, newx, newy);
+                }
                 break;
             case "Queen":
                 if((nx > 0 && nx <=8) && (ny == 0))
