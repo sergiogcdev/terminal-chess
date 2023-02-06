@@ -21,8 +21,8 @@ public class Main {
         DataLoader data = new DataLoader();
         data.load();
 
-        Table table = data.getMatrix();
-        int[][] matrix = table.getMatrix();
+        Board board = data.getMatrix();
+        int[][] matrix = board.getMatrix();
         PieceList wp = data.getWhitePieces();
         PieceList bp = data.getBlackPieces();
         
@@ -33,10 +33,13 @@ public class Main {
         //Print table
         do {
 
+            board.setWhitePieces(wp);
+            board.setBlackPieces(bp);
+
             try {
                 //StringBuilder
                 StringBuilder stringBuilder = new StringBuilder();
-                matrix = table.getMatrix();
+                matrix = board.getMatrix();
                 
                 System.out.println("\n\nTURN : " + data.getTurn());
                 System.out.print("\n\n");
