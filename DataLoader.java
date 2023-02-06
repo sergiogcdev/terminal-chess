@@ -8,7 +8,7 @@ public class DataLoader {
     private List<Piece> blackPiecesList;
     private PieceList whitePieces;
     private PieceList blackPieces;
-    private Table matrix;
+    private Board matrix;
     private String turn;
 
 
@@ -19,7 +19,7 @@ public class DataLoader {
     public PieceList getBlackPieces() {
         return new PieceList(blackPieces.getAllPieces());
     }
-    public Table getMatrix() {
+    public Board getMatrix() {
         return matrix;
     } 
     public String getTurn(){
@@ -32,7 +32,7 @@ public class DataLoader {
     public void setBlackPieces(PieceList blackPieces) {
         this.blackPieces = blackPieces;
     }
-    public void setMatrix(Table matrix) {
+    public void setMatrix(Board matrix) {
         this.matrix = matrix;
     }
 
@@ -64,7 +64,7 @@ public class DataLoader {
         this.blackPieces = new PieceList(blackPiecesList);
 
         //Create table matrix
-        this.matrix = new Table();
+        this.matrix = new Board();
     }
     
 
@@ -83,7 +83,7 @@ public class DataLoader {
             int new_pos_y = Integer.valueOf(newPos.split("-")[1]);
 
             if(this.turn.equals("White")){
-                if(this.checkPosition(this.whitePieces.getPiece(old_pos_x, old_pos_y), new_pos_x, new_pos_y)){
+                if(this.matrix.checkPosition(this.whitePieces.getPiece(old_pos_x, old_pos_y), new_pos_x, new_pos_y)){
                     System.out.println("Valid move.");
                     this.matrix.setMatrixValue(old_pos_x, old_pos_y, 0);
                     this.matrix.setMatrixValue(new_pos_x, new_pos_y, 1);
@@ -95,7 +95,7 @@ public class DataLoader {
                 }
             }
             else {
-                if(this.checkPosition(this.blackPieces.getPiece(old_pos_x, old_pos_y), new_pos_x, new_pos_y))
+                if(this.matrix.checkPosition(this.blackPieces.getPiece(old_pos_x, old_pos_y), new_pos_x, new_pos_y))
                 {
                     System.out.println("Valid move.");
                     this.matrix.setMatrixValue(old_pos_x, old_pos_y, 0);
@@ -115,404 +115,7 @@ public class DataLoader {
     }
 
 
-    public boolean checkPosition(Piece p, int newx, int newy){
-        
-        boolean flag = false;
-        int nx = Math.abs(p.getPositionX() - newx);
-        int ny = Math.abs(p.getPositionY() - newy);
-        
-        switch(p.getName())
-        {
-            case "Pawn":
-                flag = moveLikePawn(p, newx, newy);
-                break;
-            case "Rook":
-                flag = moveLikeRook(p, newx, newy);
-                break;
-            case "Knight":
-                if((nx == 2) && (ny == 1))
-                {
-                    flag = true;
-                }
-                if((ny == 2) && (nx == 1)){
-                    flag = true;
-                }
-                break;
-            case "King":
-                if((nx == 1) && (ny == 0))
-                {
-                    flag = true;
-                }
-                if((nx == 0) && (ny == 1))
-                {
-                    flag = true;
-                }
-                if (nx == ny)
-                {
-                    flag = moveLikePawn(p, newx, newy);
-                }
-                break;
-            case "Queen":
-                if((nx > 0 && nx <=8) && (ny == 0))
-                {
-                    flag = moveLikeRook(p, newx, newy);
-                }
-                else if((ny > 0 && ny <= 8 ) && (nx == 0))
-                {
-                    flag = moveLikeRook(p, newx, newy);
-                }
-                else if((nx > 0 && nx <=8) && (ny == nx))
-                {
-                    flag = moveLikeBishop(p, newx, newy);
-                }
-                else if((ny > 0 && ny <= 8) && (nx == ny))
-                {
-                    flag = moveLikeBishop(p, newx, newy);
-                }
-                break;
-            case "Bishop":
-                if((nx > 0 && nx <=8) && (ny == nx))
-                {
-                    flag = moveLikeBishop(p, newx, newy);
-                }
-                else if((ny > 0 && ny <= 8) && (nx == ny))
-                {
-                    flag = moveLikeBishop(p, newx, newy);
-                }
-                break;
-            default:
-                flag = false;
-                break;
-        }
-
-        return flag;
-
-    }
     
-    //Movement like pawn
-    public boolean moveLikePawn(Piece p, int newx, int newy)
-    {
-        boolean flag = false;
-        int n = Math.abs(p.getPositionY() - newy);
-        if(p.getColor().equals("White") && p.getPositionY() == 1)
-        {
-            if(((n > 0 && n <=2) && (p.getPositionX() == newx)) && (this.blackPieces.getPiece(newx, newy) == null))
-            {
-                flag = true;
-                if(this.blackPieces.getPiece(newx, newy - 1) != null && !this.blackPieces.getPiece(newx, newy - 1).equals(p)) flag = false;
-            }
-        }
-        else if(p.getColor().equals("Black") && p.getPositionY() == 6)
-        {
-            if(((n > 0 && n <=2) && (p.getPositionX() == newx)) && (this.whitePieces.getPiece(newx, newy) == null))
-            {
-                flag = true;
-                if(this.whitePieces.getPiece(newx, this.matrix.getMatrix().length - (newy - 1)) != null && !this.whitePieces.getPiece(newx, this.matrix.getMatrix().length - (newy - 1)).equals(p)) flag = false;
-            }
-        }
-        if(p.getColor().equals("White") && (p.getPositionX() - 1 == newx || p.getPositionX() + 1 == newx ) && p.getPositionY() + 1 == newy)
-        {
-            if( this.blackPieces.getPiece(newx, newy) != null ) flag = true;
-        }
-        else if(p.getColor().equals("Black") && (p.getPositionX() - 1 == newx || p.getPositionX() + 1 == newx) && p.getPositionY() - 1 == newy)
-        {
-            if( this.whitePieces.getPiece(newx, newy) != null ) flag = true;
-        }
-    
-        return flag;
-    }
-
-    //Diagonal movement like bishop
-    public boolean moveLikeBishop(Piece p, int newx, int newy)
-    {
-        boolean flag = true;
-        Piece p1 = null;
-        Piece p2 = null;
-        int nx = Math.abs(p.getPositionX() - newx);
-        int ny = Math.abs(p.getPositionY() - newy);
-        for(int k = 0; k < this.matrix.getMatrix().length; k++)
-        {
-            //Eje Y hacia abajo
-            if(newy > p.getPositionY())
-            {
-                if (newx > p.getPositionX()) {
-                    p1 = this.whitePieces.getPiece(newx - k, newy - k);
-                    p2 = this.blackPieces.getPiece(newx - k, newy - k);
-                } else {
-                    p1 = this.whitePieces.getPiece(newx + k, newy - k);
-                    p2 = this.blackPieces.getPiece(newx + k, newy - k);
-                }
-
-                //Eje X
-                if(p1 != null && !p1.equals(p))
-                {
-                    if(p.getPositionY() < p1.getPositionY() && p1.getPositionY() <= newy)
-                    {
-                        if(newy == p1.getPositionY() && !p1.getColor().equals(p.getColor()))
-                        {
-                            flag = true;
-                        }
-                        else {
-                            flag = false;
-                            break;
-                        }
-                    }
-                }
-                else if(p2 != null && !p2.equals(p))
-                {
-                    if(p.getPositionY() < p2.getPositionY() && p2.getPositionY() <= newy)
-                    {
-                        if(newy == p2.getPositionY() && !p2.getColor().equals(p.getColor()))
-                        {
-                            flag = true;
-                        }
-                        else {
-                            flag = false;
-                            break;
-                        }
-                    }
-                }
-            }
-            //Eje Y hacia arriba
-            else if(newy < p.getPositionY()) {
-
-                if (newx > p.getPositionX()) {
-                    p1 = this.whitePieces.getPiece(p.getPositionX() + k, p.getPositionY() - k);
-                    p2 = this.blackPieces.getPiece(p.getPositionX() + k, p.getPositionY() - k);
-                }
-                else {
-                    p1 = this.whitePieces.getPiece(p.getPositionX() - k, p.getPositionY() - k);
-                    p2 = this.blackPieces.getPiece(p.getPositionX() - k, p.getPositionY() - k);
-                }
-                // Eje X
-                if(p1 != null && !p1.equals(p))
-                {
-                    if(p.getPositionY() > p1.getPositionY() && p1.getPositionY() >= newy)
-                    {
-                        
-                        if(newy == p1.getPositionY() && !p1.getColor().equals(p.getColor()))
-                        {
-                            flag = true;
-                        }
-                        else {
-                            flag = false;
-                            break;
-                        }
-                        
-                    }
-                }
-                else if(p2 != null && !p2.equals(p))
-                {
-                    if(p.getPositionY() > p2.getPositionY() && p2.getPositionY() >= newy)
-                    {
-                        if(newy == p2.getPositionY() && !p2.getColor().equals(p.getColor()))
-                        {
-                            flag = true;
-                        }
-                        else {
-                            flag = false;
-                            break;
-                        }
-                        
-                    }
-                }
-                
-            }
-        }
-        
-        return flag;
-    }
-
-    //Linear movement like rook
-    public boolean moveLikeRook(Piece p, int newx, int newy)
-    {
-        int nx = Math.abs(p.getPositionX() - newx);
-        int ny = Math.abs(p.getPositionY() - newy);
-        boolean flag = true;
-        //Eje de las X
-        if(p.getPositionY() == newy && nx != 0)
-        {
-            
-            for(int i = 0; i < this.matrix.getMatrix().length; i+=1)
-            {
-                //if( k % 8 == 0 ) k=0;
-                Piece p1 = this.whitePieces.getPiece(i, p.getPositionY());
-                Piece p2 = this.blackPieces.getPiece(i, p.getPositionY());
-                //MOVIMIENTO PARA LA DERECHA
-                if(newx > p.getPositionX())
-                {
-                    if((p1 != null && !p1.equals(p)) || (p2 != null && !p2.equals(p)))
-                    {
-                        if((p1 != null && !p1.equals(p)))
-                        {
-                            if (newx >= p1.getPositionX() && p1.getPositionX() > p.getPositionX())
-                            {
-                                if(newx == p1.getPositionX() && !p1.getColor().equals(p.getColor()))
-                                {
-                                    flag = true;
-                                    break;
-                                }
-                                else {
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                        }
-                        else if(p2 != null && !p2.equals(p))
-                        {
-                            if(newx >= p2.getPositionX() && p2.getPositionX() > p.getPositionX())
-                            {
-                                if(newx == p2.getPositionX() && !p2.getColor().equals(p.getColor()))
-                                {
-                                    flag = true;
-                                    break;
-                                }
-                                else {
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                            
-                        }
-                    }
-                }
-                //MOVIMIENTO PARA LA IZQUIERDA
-                if(newx < p.getPositionX())
-                {
-                    if((p1 != null && !p1.equals(p)) || (p2 != null && !p2.equals(p)))
-                    {
-                        if((p1 != null && !p1.equals(p)))
-                        {
-                            if (newx <= p1.getPositionX() && p1.getPositionX() < p.getPositionX())
-                            {
-                                if(newx == p1.getPositionX() && !p1.getColor().equals(p.getColor()))
-                                {
-                                    flag = true;
-                                    break;
-                                }
-                                else {
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                        }
-                        else if(p2 != null && !p2.equals(p))
-                        {
-                            if(newx <= p2.getPositionX() && p2.getPositionX() < p.getPositionX())
-                            {
-                                if(newx == p2.getPositionX() && !p2.getColor().equals(p.getColor()))
-                                {
-                                    flag = true;
-                                    break;
-                                }
-                                else {
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                            
-                        }
-                    }
-                }
-                //k += 1;
-            }
-
-        }
-        //Eje de las Y
-        else if(p.getPositionX() == newx && ny != 0)
-        {
-            
-            for(int i = 0; i < this.matrix.getMatrix().length; i+=1)
-            {
-                //if ( k % 8 == 0 ) k = 0;
-                Piece p1 = this.whitePieces.getPiece(p.getPositionX(), i);
-                Piece p2 = this.blackPieces.getPiece(p.getPositionX(), i);
-                //MOVIMIENTO PARA ABAJO
-                if(newy > p.getPositionY())
-                {
-                    if((p1 != null && !p1.equals(p)))
-                    {
-                        if (newy >= p1.getPositionY() && p1.getPositionY() > p.getPositionY())
-                        {
-                            if(newy == p1.getPositionY() && !p1.getColor().equals(p.getColor()))
-                            {
-                                flag = true;
-                                break;
-                            }
-                            else {
-                                flag = false;
-                                break;
-                            }
-                        }
-                    }
-                    else if(p2 != null && !p2.equals(p))
-                    {
-                        if(newy >= p2.getPositionY() && p2.getPositionY() > p.getPositionY())
-                        {
-                            if(newy == p2.getPositionY() && !p2.getColor().equals(p.getColor()))
-                            {
-                                flag = true;
-                                break;
-                            }
-                            else {
-                                flag = false;
-                                break;
-                            }
-                        }
-                        
-                    }
-                    
-                }
-                //MOVIMIENTO PARA ARRIBA
-                if(newy <= p.getPositionY())
-                {
-                    if((p1 != null && !p1.equals(p)) || (p2 != null && !p2.equals(p)))
-                    {
-                        if((p1 != null && !p1.equals(p)))
-                        {
-                            if (newy <= p1.getPositionY() && p1.getPositionY() < p.getPositionY())
-                            {
-                                if(newy == p1.getPositionY() && !p1.getColor().equals(p.getColor()))
-                                {
-                                    flag = true;
-                                    break;
-                                }
-                                else {
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                        }
-                        else if(p2 != null && !p2.equals(p))
-                        {
-                            if(newy <= p2.getPositionY() && p2.getPositionY() < p.getPositionY())
-                            {
-                                if(newy == p2.getPositionY() && !p2.getColor().equals(p.getColor()))
-                                {
-                                    flag = true;
-                                    break;
-                                }
-                                else {
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                            
-                        }
-                    }
-                }
-                //k += 1;
-            }
-        }
-        //Movimiento en ambos ejes
-        else if(nx != 0 && ny != 0)
-        {
-            flag = false;
-        }
-
-        return flag;
-
-    }
 
     //White pieces methods
 
