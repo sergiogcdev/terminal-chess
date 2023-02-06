@@ -188,7 +188,7 @@ public class DataLoader {
         return flag;
 
     }
-
+    
     //Movement like pawn
     public boolean moveLikePawn(Piece p, int newx, int newy)
     {
@@ -196,16 +196,14 @@ public class DataLoader {
         int n = Math.abs(p.getPositionY() - newy);
         if(p.getColor().equals("White") && p.getPositionY() == 1)
         {
-            
-            if((n > 0 && n <=2) && (p.getPositionX() == newx))
+            if(((n > 0 && n <=2) && (p.getPositionX() == newx)) && ((this.blackPieces.getPiece(newx, newy) == null) || (this.blackPieces.getPiece(newx + 1, newy + 1) != null && !this.blackPieces.getPiece(newx + 1, newy + 1).equals(p))))
             {
                 flag = true;
             }
         }
         else if(p.getColor().equals("Black") && p.getPositionY() == 6)
         {
-            
-            if((n > 0 && n <=2) && (p.getPositionX() == newx))
+            if(((n > 0 && n <=2) && (p.getPositionX() == newx)) && ((this.whitePieces.getPiece(newx, newy) == null)  || (this.whitePieces.getPiece(newx - 1, newy - 1) != null && !this.whitePieces.getPiece(newx - 1, newy - 1).equals(p))))
             {
                 flag = true;
             }
@@ -217,10 +215,6 @@ public class DataLoader {
         else if(p.getColor().equals("Black") && (p.getPositionX() - 1 == newx || p.getPositionX() + 1 == newx) && p.getPositionY() - 1 == newy)
         {
             if( this.whitePieces.getPiece(newx, newy) != null ) flag = true;
-        }
-        if((n == 1) && (p.getPositionX() == newx))
-        {
-                flag = true;
         }
     
         return flag;
