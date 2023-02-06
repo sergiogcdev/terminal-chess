@@ -196,16 +196,18 @@ public class DataLoader {
         int n = Math.abs(p.getPositionY() - newy);
         if(p.getColor().equals("White") && p.getPositionY() == 1)
         {
-            if(((n > 0 && n <=2) && (p.getPositionX() == newx)) && ((this.blackPieces.getPiece(newx, newy) == null) || (this.blackPieces.getPiece(newx + 1, newy + 1) != null && !this.blackPieces.getPiece(newx + 1, newy + 1).equals(p))))
+            if(((n > 0 && n <=2) && (p.getPositionX() == newx)) && (this.blackPieces.getPiece(newx, newy) == null))
             {
                 flag = true;
+                if(this.blackPieces.getPiece(newx, newy - 1) != null && !this.blackPieces.getPiece(newx, newy - 1).equals(p)) flag = false;
             }
         }
         else if(p.getColor().equals("Black") && p.getPositionY() == 6)
         {
-            if(((n > 0 && n <=2) && (p.getPositionX() == newx)) && ((this.whitePieces.getPiece(newx, newy) == null)  || (this.whitePieces.getPiece(newx - 1, newy - 1) != null && !this.whitePieces.getPiece(newx - 1, newy - 1).equals(p))))
+            if(((n > 0 && n <=2) && (p.getPositionX() == newx)) && (this.whitePieces.getPiece(newx, newy) == null))
             {
                 flag = true;
+                if(this.whitePieces.getPiece(newx, this.matrix.getMatrix().length - (newy - 1)) != null && !this.whitePieces.getPiece(newx, this.matrix.getMatrix().length - (newy - 1)).equals(p)) flag = false;
             }
         }
         if(p.getColor().equals("White") && (p.getPositionX() - 1 == newx || p.getPositionX() + 1 == newx ) && p.getPositionY() + 1 == newy)
