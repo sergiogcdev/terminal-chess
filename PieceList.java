@@ -10,6 +10,15 @@ public class PieceList {
         this.allPieces = list;
     }
 
+    public Piece getFirstPieceBySymbol(String symbol) {
+        List<Piece> filteredList = new ArrayList<>();
+        filteredList = this.allPieces.stream().filter(piece -> piece.getSymbol().equals(symbol)).collect(Collectors.toList());
+        Piece p;
+        if(filteredList.size() > 0) p = filteredList.get(0);
+        else p = null;
+        return p;
+    }
+
     public Piece getPiece(int pos_x, int pos_y)
     {
         List<Piece> filteredList = new ArrayList<>();

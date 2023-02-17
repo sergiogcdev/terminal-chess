@@ -1,4 +1,5 @@
 public class Board {
+    private String status;
     private PieceList whitePieces;
     private PieceList blackPieces;
     private int[][] matrix = {
@@ -16,6 +17,9 @@ public class Board {
     }
     public void setBlackPieces(PieceList list) {
         this.blackPieces = list;
+    }
+    public String getStatus() {
+        return this.status;
     }
     public int[][] getMatrix() {
         return this.matrix;
@@ -65,6 +69,46 @@ public class Board {
         }
         return flag;
     }
+    //Check OR Checkmate
+    public void kingCheck(Piece p) {
+        Piece pKing = ( p.getColor().equals("White") ) ? this.blackPieces.getFirstPieceBySymbol("K") : this.whitePieces.getFirstPieceBySymbol("K");
+        int nx = Math.abs(p.getPositionX() - pKing.getPositionX());
+        int ny = Math.abs(p.getPositionY() - pKing.getPositionY());
+        boolean flag = false;
+        switch(p.getName()) {
+            case "Pawn":
+                flag = moveLikePawn(p, pKing.getPositionX(), pKing.getPositionY());
+                break;
+            case "Rook":
+                flag = moveLikeRook(p, pKing.getPositionX(), pKing.getPositionY());
+                break;
+            case "Knight":
+                if((nx == 2) && (ny == 1)) flag = true;
+                if((ny == 2) && (nx == 1)) flag = true;
+                break;
+            case "King":
+                if((nx == 1) && (ny == 0)) flag = true;
+                if((nx == 0) && (ny == 1)) flag = true;
+                if (nx == ny) flag = moveLikePawn(p, pKing.getPositionX(), pKing.getPositionY());
+                break;
+            case "Queen":
+                if((nx > 0 && nx <=8) && (ny == 0)) flag = moveLikeRook(p, pKing.getPositionX(), pKing.getPositionY());
+                else if((ny > 0 && ny <= 8 ) && (nx == 0)) flag = moveLikeRook(p, pKing.getPositionX(), pKing.getPositionY());
+                else if((nx > 0 && nx <=8) && (ny == nx)) flag = moveLikeBishop(p, pKing.getPositionX(), pKing.getPositionY());
+                else if((ny > 0 && ny <= 8) && (nx == ny)) flag = moveLikeBishop(p, pKing.getPositionX(), pKing.getPositionY());
+                break;
+            case "Bishop":
+                if((nx > 0 && nx <=8) && (ny == nx)) flag = moveLikeBishop(p, pKing.getPositionX(), pKing.getPositionY());
+                else if((ny > 0 && ny <= 8) && (nx == ny)) flag = moveLikeBishop(p, pKing.getPositionX(), pKing.getPositionY());
+                break;
+            default:
+                flag = false;
+                break;
+        }
+        if(flag) this.status = "CHECK_OR_CHECKMATE_STATUS";
+        else this.status = "PLAYING_STATUS";
+    }
+
     //Movement like pawn
     public boolean moveLikePawn(Piece p, int newx, int newy)
     {

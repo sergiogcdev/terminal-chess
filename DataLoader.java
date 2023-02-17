@@ -84,27 +84,31 @@ public class DataLoader {
 
             if(this.turn.equals("White")){
                 if(this.matrix.checkPosition(this.whitePieces.getPiece(old_pos_x, old_pos_y), new_pos_x, new_pos_y)){
-                    System.out.println("Valid move.");
+                    System.out.println("Very good! You've done a valid move.");
                     this.matrix.setMatrixValue(old_pos_x, old_pos_y, 0);
                     this.matrix.setMatrixValue(new_pos_x, new_pos_y, 1);
                     this.whitePieces.setPiece(old_pos_x, old_pos_y, new_pos_x, new_pos_y);
                     this.turn = "Red";
+                    this.matrix.kingCheck(this.whitePieces.getPiece(new_pos_x, new_pos_y));
+                    System.out.println( Main.ANSI_GREEN + "GAME STATUS: " + this.matrix.getStatus() + Main.ANSI_RESET );
                 }
                 else {
-                    System.out.println("Invalid move.");
+                    System.out.println("Invalid move. Try again!");
                 }
             }
             else {
                 if(this.matrix.checkPosition(this.blackPieces.getPiece(old_pos_x, old_pos_y), new_pos_x, new_pos_y))
                 {
-                    System.out.println("Valid move.");
+                    System.out.println("Very good! You've done a valid move.");
                     this.matrix.setMatrixValue(old_pos_x, old_pos_y, 0);
                     this.matrix.setMatrixValue(new_pos_x, new_pos_y, 1);
                     this.blackPieces.setPiece(old_pos_x, old_pos_y, new_pos_x, new_pos_y);
                     this.turn = "White";
+                    this.matrix.kingCheck(this.blackPieces.getPiece(new_pos_x, new_pos_y));
+                    System.out.println( Main.ANSI_GREEN + "GAME STATUS: " + this.matrix.getStatus() + Main.ANSI_RESET );
                 }
                 else {
-                    System.out.println("Invalid move.");
+                    System.out.println("Invalid move. Try again!");
                 }
             }
         }
